@@ -4,7 +4,6 @@ import {createStackNavigator} from '@react-navigation/stack'
 import MiTienda from '../Pantallas/MiTienda/MiTienda'
 import EditProducto from '../Pantallas/MiTienda/EditProducto'
 
-
 const Stack=createStackNavigator()
 
 export default function MiTiendaStack(){

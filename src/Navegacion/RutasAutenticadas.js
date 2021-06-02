@@ -9,7 +9,7 @@ import {Icon} from "react-native-elements"
 import TiendaStack  from './TiendaStack'
 import PerfilStack  from './PerfilStack'
 import MiTiendaStack  from './MiTiendaStack'
-
+import ShopButton from '../Componentes/ShopButton'
 
 const Tab =createBottomTabNavigator()
 const Drawer=createDrawerNavigator()
@@ -45,13 +45,16 @@ const TabBar=()=>{
          <Tab.Screen
               component={MiTiendaStack}
               name="mi-tienda"
-              options={{title:"M tienda"}}
+              options={{
+                title:"",
+                tabBarIcon:()=><ShopButton/>
+              }}
             /> 
             
            <Tab.Screen
               component={PerfilStack} 
               name="perfil"
-              options={{title:"Perfil"}}
+              options={{title:"Cuenta"}}
             />  
         </Tab.Navigator>
     )

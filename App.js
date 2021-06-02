@@ -1,11 +1,11 @@
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import  RutasAutenticadas from './src/Navegacion/RutasAutenticadas'
+import  RutasNoAutenticadas from './src/Navegacion/RutasNoAutenticadas'
 
 export default function App() {
   return (
-   <RutasAutenticadas/>
+   <RutasNoAutenticadas/>
   )
 }
 
