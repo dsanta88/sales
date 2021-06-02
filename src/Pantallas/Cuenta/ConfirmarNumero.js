@@ -1,10 +1,10 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-export default function Account() {
+export default function ConfirmarNumero() {
     return (
         <View>
-            <Text>Account</Text>
+            <Text>ConfirmarNumero</Text>
         </View>
     )
 }

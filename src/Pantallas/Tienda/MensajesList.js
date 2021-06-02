@@ -1,10 +1,10 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-export default function Sales() {
+export default function MensajesList() {
     return (
         <View>
-            <Text>Sales</Text>
+            <Text>MensajesList</Text>
         </View>
     )
 }
