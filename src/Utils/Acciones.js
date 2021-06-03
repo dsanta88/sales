@@ -1,11 +1,7 @@
 import {firebaseApp} from './Firebase'
 import * as firebase from 'firebase'
 
-export const validarSesion=()=>{
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 const db= firebase.firestore(firebaseApp)
 
 export const  isUserLogged=()=>{
@@ -75,74 +71,51 @@ export const  validarPhone=(setPhoneAut)=>{
 }
 
 
-// export const autenticationWithPhone=async(numero,recaptcha)=>{
-//   const result={statusResponse:true,verificationId:null, error:null}
-//   try{
-
-//     await 
-//       firebase
-//       .auth()
-//       .reathenticateWithPhoneNumber(numero,recaptcha.current)
-//       .then((response)=>{
-//         verificationId=response.verificationId
-//       })
-//   }
-//   catch(error){
-//     result.statusResponse=false
-//     result.error="Error al momento de verificar con número de téfono."
-//   }
-
-//   return result
-// }
-
-
-// export const confirmarCodigo=async(verificationId,codigo)=>{
-//   const result={statusResponse:true, error:null}
-//   try{
-//     const credenciales= await firebase.auth().PhoneAuthProvider.credentia(verificationId,codigo)
+export const autenticationWithPhone=async(numero,recaptcha)=>{
+  const result={statusResponse:true,verificationId:null, error:null}
+  try{
     
-//     await
-//     firebase
-//     .auth()
-//     .currentUser.linkWithCredential(credenciales)
-//     .catch((err)=>{
-//         result.statusResponse=false
-//         result.error=err
-//     })
- 
-//   }
-//   catch(error){
-//     result.statusResponse=false
-//     result.error="Error al momento de verificar con número de téfono."
-//   }
 
-//   return result
-// }
-=======
-  firebase.auth().onAuthStateChanged((user)=>{
-    if(user){
-      console.log("Logueado")
-    }else{
-       console.log("No logueado")
-    }
-=======
-  firebase.auth().onAuthStateChanged((user)=>{
-    if(user){
-      console.log("Logueado")
-    }else{
-       console.log("No logueado")
-    }
->>>>>>> parent of ae136be (Confirmar numero)
-=======
-  firebase.auth().onAuthStateChanged((user)=>{
-    if(user){
-      console.log("Logueado")
-    }else{
-       console.log("No logueado")
-    }
->>>>>>> parent of ae136be (Confirmar numero)
-})
-
->>>>>>> parent of ae136be (Confirmar numero)
-
+    
+    await 
+      firebase
+      .auth()
+      .signInWithPhoneNumber(numero,recaptcha.current)
+      .then((response)=>{
+        verificationId=response.verificationId
+      })
+      .catch((ex)=>{
+         result.error=ex
+      })
+  }
+  catch(error){
+    result.statusResponse=false
+    result.error=error
+  }
+  return result
 }
+
+
+export const confirmarCodigo=async(verificationId,codigo)=>{
+  const result={statusResponse:true, error:null}
+  try{
+    const credenciales= await firebase.auth().PhoneAuthProvider.credentia(verificationId,codigo)
+    
+    await
+    firebase
+    .auth()
+    .currentUser.linkWithCredential(credenciales)
+    .catch((err)=>{
+        result.statusResponse=false
+        result.error=err
+    })
+ 
+  }
+  catch(error){
+    result.statusResponse=false
+    result.error="Error al momento de verificar con número de téfono."
+  }
+
+  return result
+}
+

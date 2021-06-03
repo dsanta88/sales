@@ -1,12 +1,13 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Icon,Button } from 'react-native-elements'
+
+import { StyleSheet, Text, View ,Image} from 'react-native'
+
 
 export default function ConfirmarNumero() {
     return (
         <View>
-            <Text>ConfirmarNumero</Text>
-        </View>
+  
+     </View>
     )
 }
-
-const styles = StyleSheet.create({})
