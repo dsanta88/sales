@@ -2,10 +2,9 @@ import {firebaseApp} from './Firebase'
 import * as firebase from 'firebase'
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-import * as Permissions from 'expo-permissions';
 import {Platform} from 'react-native';
-import { EdgeInsetsPropType } from 'react-native';
 import "firebase/firestore"
+import { fileToBlob } from './Helpers'
 
 const db= firebase.firestore(firebaseApp)
 
@@ -16,6 +15,7 @@ Notifications.setNotificationHandler({
     shouldSetBadge:false
   })
 })
+
 
 export const validarSesion = (setUser) => {
   firebase.auth().onAuthStateChanged((user) => {
@@ -193,3 +193,23 @@ export const getToken = async () => {
   
     return result
   }
+
+
+  
+export const uploadImage=async(image,path,name)=>{
+
+  const result={statusResponse:false, error:null, url:null}
+  const ref=firebase.storage().ref(path).child(name)
+  const blob=await fileToBlob(image)
+  
+  try{
+   await ref.put(blob)
+   const url=await firebase.storage().ref(`${path}/${name}`).getDownloadURL()
+   result.statusResponse=true
+   result.url=url
+  }
+  catch(error){
+    result.error=error
+  }
+  return result
+}

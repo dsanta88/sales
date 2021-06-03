@@ -1,11 +1,13 @@
 
 import React,{useState,useEffect} from 'react';
-import { StyleSheet, Text, View ,LogBox} from 'react-native';
+import { StyleSheet,LogBox} from 'react-native';
 import Loading from './src/Componentes/Loading';
 import RutasNoAutenticadas from './src/Navegacion/RutasNoAutenticadas'
 import {validarSesion} from './src/Utils/Acciones'
 import SwitchNavigator from './src/Navegacion/SwitchNavigator'
 
+
+LogBox.ignoreAllLogs()
 
 export default function App() {
 
@@ -13,9 +15,9 @@ export default function App() {
    const [loading, setLoading] = useState(false)
 
    useEffect(() => {
-    setLoading(true)
-    validarSesion(setUser);
-    setLoading(false)
+     setLoading(true)
+     validarSesion(setUser);
+     setLoading(false)
    },[])
    
    if(loading){
