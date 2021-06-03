@@ -5,6 +5,7 @@ export const validarSesion=()=>{
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 const db= firebase.firestore(firebaseApp)
 
 export const  isUserLogged=()=>{
@@ -124,6 +125,14 @@ export const  validarPhone=(setPhoneAut)=>{
     }else{
        console.log("No logueado")
     }
+=======
+  firebase.auth().onAuthStateChanged((user)=>{
+    if(user){
+      console.log("Logueado")
+    }else{
+       console.log("No logueado")
+    }
+>>>>>>> parent of ae136be (Confirmar numero)
 =======
   firebase.auth().onAuthStateChanged((user)=>{
     if(user){

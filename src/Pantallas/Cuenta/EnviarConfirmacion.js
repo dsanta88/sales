@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React,{useState,useRef} from 'react'
 import { StyleSheet, Text, View,TextInput,Image } from 'react-native'
 import {Button,Icon} from 'react-native-elements'
@@ -12,11 +13,14 @@ import {isEmpty} from 'lodash'
 >>>>>>> parent of ae136be (Confirmar numero)
 =======
 >>>>>>> parent of ae136be (Confirmar numero)
+=======
+>>>>>>> parent of ae136be (Confirmar numero)
 
 export default function EnviarConfirmacion() {
     return (
         <View>
             <Text>EnviarConfirmacion</Text>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         <View style={styles.container}>
@@ -119,6 +123,13 @@ const styles = StyleSheet.create({
          marginLeft:5,
      },
 })
+=======
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({})
+>>>>>>> parent of ae136be (Confirmar numero)
 =======
         </View>
     )
