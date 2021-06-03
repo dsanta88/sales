@@ -1,12 +1,31 @@
 
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import  RutasNoAutenticadas from './src/Navegacion/RutasNoAutenticadas'
+import React,{useState,useEffect} from 'react';
+import { StyleSheet, Text, View ,LogBox} from 'react-native';
+import Loading from './src/Componentes/Loading';
+import RutasNoAutenticadas from './src/Navegacion/RutasNoAutenticadas'
+import {isUserLogged} from './src/Utils/Acciones'
+import SwitchNavigator from './src/Navegacion/SwitchNavigator'
+
 
 export default function App() {
-  return (
-   <RutasNoAutenticadas/>
-  )
+
+   const [user,setUser]=useState(false)
+   const [loading, setLoading] = useState(false)
+
+   useEffect(() => {
+    setLoading(true)
+    if(isUserLogged){
+      setUser(true)
+    }
+    setLoading(false)
+   },[])
+   
+   if(loading){
+     return <Loading isVisible={loading} text="Cargando.."/>
+   }
+
+  return user ?  <SwitchNavigator/>:<RutasNoAutenticadas/>
+
 }
 
 const styles = StyleSheet.create({

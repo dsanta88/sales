@@ -2,28 +2,61 @@ import React,{useState} from 'react'
 import { StyleSheet, Text, View,TouchableOpacity } from 'react-native'
 import {Icon,Input,Button,Divider} from "react-native-elements"
 import {useNavigation} from "@react-navigation/native"
-import {validarEmail} from '../Utils/Utils'
+import {validarEmail} from '../Utils/Helpers'
 import {isEmpty} from 'lodash'
-import {validarSesion} from '../Utils/Acciones'
+
+import Loading from '../Componentes/Loading.js'
+import {login} from '../Utils/Acciones'
+
+
 
 export default function LoginForm(props) {
-    
+   
     const {toastRef} =props;
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [show, setShow] = useState(true)
+    const [loading, setLoading] = useState(false)
+    const [errorEmail, setErrorEmail] = useState("")
+    const [errorPassword, setErrorPassword] = useState("")
 
-    validarSesion()
 
-    
-     const iniciarSesion=()=>{
-       if(isEmpty(email) && isEmpty(password)){
-          toastRef.current.show("Debe ingresar el email y el password.")
-       }
-       else if(!validarEmail(email)){
-        toastRef.current.show("Debe ingresar un email valido.")
-       }
+    const navigation =useNavigation()
+     
+     const iniciarSesion=async()=>{
+      if(!validarDatos()){
+        return;
+      }   
+  
+      setLoading(true)
+      const result=await login(email,password)
+      setLoading(false)
+      if(!result.statusResponse){
+         setErrorEmail(result.error)
+         return
+      }
+       
+      console.log("USUARIO LOGUEADO")
      }
 
+    const validarDatos=()=>{
+      setErrorEmail("")
+      setErrorPassword("")
+      let isValid=true
+  
+      if(!validarEmail(email)){
+       setErrorEmail("Debes ingresar un email válido.")
+        isValid=false
+      }
+  
+      if(isEmpty(password))
+      {
+        setErrorPassword("Debes ingresar la contraseña.")
+        isValid=false
+      }
+      return isValid
+    }
+  
 
     return (
         <View style={styles.container}>
@@ -32,6 +65,9 @@ export default function LoginForm(props) {
             <Input 
               placeholder="Email"
               containerStyle={styles.input}
+              keyboardType="email-address"
+              errorMessage={errorEmail}
+              defaultValue={email}
               leftIcon={{
                 type:"material-community",
                 name:"account-circle-outline",
@@ -44,19 +80,23 @@ export default function LoginForm(props) {
             <Input
               placeholder="Password"
               containerStyle={styles.input}
-               leftIcon={{
+              errorMessage={errorPassword}
+              leftIcon={{
                 type:"material-community",
                 name:"lock",
                 color:"#176bb4"
                }}
                rightIcon={{
-                type:"material-community",
-                name:"eye-outline",
-                color:"#176bb4"
+                 type:"material-community",
+                 name: show ? "eye-off-outline":"eye-outline",
+                color:"#176bb4",
+                onPress:()=>setShow(!show)
               }}
               onChangeText={(text)=>{
                 setPassword(text)
               }}
+              secureTextEntry={show}
+              value={password}
               />
             <Button  
               title="Ingresar"
@@ -64,8 +104,14 @@ export default function LoginForm(props) {
                buttonStyle={{backgroundColor: "#176bb4"}}
                onPress={()=>iniciarSesion()}
               />
-            <Text  style={styles.txtRegistro}> 
-                No tienes cuenta? <Text style={styles.txtCuenta}>Registro</Text>
+             <Text  style={styles.txtRegistro}> 
+                No tienes cuenta? 
+                <Text 
+                 style={styles.txtCuenta}
+                 onPress={()=>navigation.navigate("registro")}
+                 >
+                   Registro
+             </Text>
             </Text>
 
             <Divider
@@ -102,6 +148,7 @@ export default function LoginForm(props) {
                 </TouchableOpacity>
 
             </View>
+            <Loading isVisible={loading} text="Favor espere"/>
         </View>
     )
 }
