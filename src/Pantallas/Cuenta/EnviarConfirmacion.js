@@ -1,21 +1,20 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+<<<<<<< HEAD
 import React,{useState,useRef} from 'react'
 import { StyleSheet, Text, View,TextInput,Image } from 'react-native'
 import {Button,Icon} from 'react-native-elements'
 import CountryPicker from 'react-native-country-picker-modal'
 import {useNavigation} from '@react-navigation/native'
 import {isEmpty} from 'lodash'
+=======
+>>>>>>> parent of ae136be (Confirmar numero)
 
 export default function EnviarConfirmacion() {
-    
-  const [country, setCountry] = useState("CO")
-  const [callingCode, setCallingCode] = useState("57")
-  const [phone, setPhone] = useState("")
-
     return (
         <View>
             <Text>EnviarConfirmacion</Text>
+<<<<<<< HEAD
         <View style={styles.container}>
              <Image
               source={require("../../../assets/logo.jpg")}
@@ -116,3 +115,10 @@ const styles = StyleSheet.create({
          marginLeft:5,
      },
 })
+=======
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({})
+>>>>>>> parent of ae136be (Confirmar numero)
