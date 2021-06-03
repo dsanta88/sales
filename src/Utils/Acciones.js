@@ -1,20 +1,33 @@
 import {firebaseApp} from './Firebase'
 import * as firebase from 'firebase'
-
+import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
+import {Platform} from 'react-native';
+import { EdgeInsetsPropType } from 'react-native';
+import "firebase/firestore"
 
 const db= firebase.firestore(firebaseApp)
 
-export const  isUserLogged=()=>{
-    let isLogged=false
-    firebaseApp.auth().onAuthStateChanged((user)=>{
-      user!==null && (isLogged=true)
-    }) 
-    return isLogged
-}
+Notifications.setNotificationHandler({
+  handleNotification: async()=>({
+    shouldShowAlert:true,
+    shouldPlaySound:false,
+    shouldSetBadge:false
+  })
+})
 
-export const getCurrentUser= ()=>{
-  return firebase.auth().currentUser
-}
+export const validarSesion = (setUser) => {
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      setUser(true);
+    } else {
+      setUser(false);
+    }
+  });
+};
+
+
 
 export const cerrarSesion=()=>{
   firebase
@@ -61,13 +74,17 @@ export const login=async(email,password)=>{
 
 
 export const  validarPhone=(setPhoneAut)=>{
-  firebaseApp
-  .auth()
-  .onAuthStateChanged((user)=>{
-    if(user.phoneNumber){
-      setPhoneAut(true)
-    }
-  }) 
+
+  try{
+     db.collection("usuarios")
+     .doc(getUsuario().uid)
+     .onSnapshot((snapshot)=>{
+         setPhoneAut(snapshot.exists)
+     })
+  }
+  catch(error){
+
+  }
 }
 
 
@@ -82,7 +99,7 @@ export const autenticationWithPhone=async(numero,recaptcha)=>{
       .auth()
       .signInWithPhoneNumber(numero,recaptcha.current)
       .then((response)=>{
-        verificationId=response.verificationId
+        result.verificationId=response.verificationId
       })
       .catch((ex)=>{
          result.error=ex
@@ -96,26 +113,83 @@ export const autenticationWithPhone=async(numero,recaptcha)=>{
 }
 
 
-export const confirmarCodigo=async(verificationId,codigo)=>{
+export const verificarCodigo=async(verificationId,codigo)=>{
+
+
   const result={statusResponse:true, error:null}
   try{
-    const credenciales= await firebase.auth().PhoneAuthProvider.credentia(verificationId,codigo)
+    const credenciales = firebase.auth.PhoneAuthProvider.credential( verificationId,codigo);
     
-    await
-    firebase
+    await firebase
     .auth()
     .currentUser.linkWithCredential(credenciales)
-    .catch((err)=>{
+    .then((response) => (result.statusResponse = true))
+    .catch((ex)=>{
         result.statusResponse=false
-        result.error=err
+        result.error=ex
     })
  
   }
-  catch(error){
+  catch(ex){
     result.statusResponse=false
-    result.error="Error al momento de verificar con número de téfono."
+    result.error=ex
   }
-
+  
   return result
 }
 
+export const getToken = async () => {
+
+  let token=""
+
+  if (Constants.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    } else {
+       alert('Must use physical device for Push Notifications');
+    }
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  return token
+  };
+
+
+  export const getUsuario=()=>{
+    return firebase.auth().currentUser
+  }
+
+  export const addDocument=async(collection,doc,data)=>{
+    const result={statusResponse:true, error:null, data:null }
+  
+    try{
+       await 
+          db.collection(collection)
+          .doc(doc)
+          .set(data)
+          .catch((ex)=>{
+            result.error=ex
+          })
+    }
+    catch(ex){
+      result.error=ex
+    }
+  
+    return result
+  }

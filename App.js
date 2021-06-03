@@ -3,7 +3,7 @@ import React,{useState,useEffect} from 'react';
 import { StyleSheet, Text, View ,LogBox} from 'react-native';
 import Loading from './src/Componentes/Loading';
 import RutasNoAutenticadas from './src/Navegacion/RutasNoAutenticadas'
-import {isUserLogged} from './src/Utils/Acciones'
+import {validarSesion} from './src/Utils/Acciones'
 import SwitchNavigator from './src/Navegacion/SwitchNavigator'
 
 
@@ -14,9 +14,7 @@ export default function App() {
 
    useEffect(() => {
     setLoading(true)
-    if(isUserLogged){
-      setUser(true)
-    }
+    validarSesion(setUser);
     setLoading(false)
    },[])
    
