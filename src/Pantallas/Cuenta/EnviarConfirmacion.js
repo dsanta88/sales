@@ -1,15 +1,51 @@
 import React,{useState,useRef} from 'react'
-import { StyleSheet, Text, View,TextInput,Image } from 'react-native'
+import { StyleSheet, Text, View,TextInput,Image,Alert } from 'react-native'
 import {Button,Icon} from 'react-native-elements'
 import CountryPicker from 'react-native-country-picker-modal'
 import {useNavigation} from '@react-navigation/native'
 import {isEmpty} from 'lodash'
+// import FirebaseRecaptcha from "../../Utils/FirebaseRecaptcha";
+// import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha'
+
+// import {autenticationWithPhone} from '../../Utils/Acciones'
+
+const navigation=useNavigation()
 
 export default function EnviarConfirmacion() {
     
   const [country, setCountry] = useState("CO")
   const [callingCode, setCallingCode] = useState("57")
   const [phone, setPhone] = useState("")
+  
+//   const recaptchaVerif=useRef()
+//   const inputPhone=useRef()
+
+
+//   const enviarConfirmacion= async()=>{
+//      if(!isEmpty(phone)){
+//          const numero=`+${callingCode}${phone}`
+         
+//          const result=await autenticationWithPhone(numero,recaptchaVerif)
+//          if(!result.statusResponse){
+//             Alert.alert(
+//                 "Verificación",
+//                 "Favor ingrese un número de celular válido",
+//                 [{
+//                     style:"cancel",
+//                     text:"Entendido",
+//                     onPress:()=>{
+//                       inputPhone.current.clear()
+//                       inputPhone.current.focus()
+//                     }
+//                 }]
+//             )
+//          }
+//          else{
+//             const verificationId=result.verificationId
+//             navigation.navigate("confirmar-numero",{verificationId})
+//          }
+//      }
+//   }
 
     return (
         <View style={styles.container}>
@@ -53,15 +89,18 @@ export default function EnviarConfirmacion() {
                    placeholderTextColor="#fff"
                    onChangeText={(text)=>setPhone(text)}
                    value={phone}
+                   //ref={inputPhone}
                   />
               </View>
               <Button
                title="Confirmar número"
                buttonStyle={{backgroundColor:"#1c5c97", marginHorizontal:20}}
                containerStyle={{marginVertical:20}}
+            //    onPress={()=>enviarConfirmacion()}
               />
             </View>
         </View>
+        {/* <FirebaseRecaptcha referencia={recaptchaVerif}/> */}
      </View>
     )
 }
