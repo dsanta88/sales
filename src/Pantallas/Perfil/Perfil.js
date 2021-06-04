@@ -13,6 +13,9 @@ export default function Perfil(){
     const [phoneNumber,setPhoneNumber]=useState("")
     const [email,setEmail]=useState("")
 
+    const [editName,setEditName]=useState(false)
+    const [editEmail,setEditEmail]=useState(false)
+    const [editPhone,setEditPhone]=useState(false)
 
     useEffect(() => {
          const {displayName,phoneNumber,email}=user
@@ -61,6 +64,12 @@ export default function Perfil(){
             <FormDatos 
              onChangeInput={onChangeInput}
              getValor={getValor}
+             editName={editName}
+             setEditName={setEditName}
+             editEmail={editEmail}
+             setEditEmail={setEditEmail}
+             editPhone={editPhone}
+             setEditPhone={setEditPhone}
             />
         </View>
     )
@@ -133,7 +142,7 @@ function HeaderAvatar(props){
 
 
 function FormDatos(props){
- const {onChangeInput,getValor}=props
+ const {onChangeInput,getValor,editName,editEmail,editPhone,setEditName,setEditEmail,setEditPhone}=props
   return(
       <View>
        <InputEdit
@@ -142,6 +151,8 @@ function FormDatos(props){
          getValor={getValor}
          placeholder="Nombre"
          onChangeInput={onChangeInput}
+         editable={editName}
+         setEditable={setEditName}
        />
       <InputEdit
          id="email"
@@ -149,6 +160,8 @@ function FormDatos(props){
          getValor={getValor}
          placeholder="ejemplo@gmail.com"
          onChangeInput={onChangeInput}
+         editable={editEmail}
+         setEditable={setEditEmail}
        />
        <InputEdit
          id="phoneNumber"
@@ -156,6 +169,8 @@ function FormDatos(props){
          getValor={getValor}
          placeholder="+000000000"
          onChangeInput={onChangeInput}
+         editable={editPhone}
+         setEditable={setEditPhone}
        />
       </View>
   )

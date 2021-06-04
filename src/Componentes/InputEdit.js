@@ -1,10 +1,15 @@
 import React from 'react'
 import { StyleSheet, Text, View,TextInput } from 'react-native'
+import {Icon} from "react-native-elements"
 
 
 export default function InputEdit(props) {
 
-    const {id,label,getValor,placeholder,onChangeInput }=props
+    const {id,label,getValor,placeholder,onChangeInput,editable,setEditable }=props
+    
+    const editar=()=>{
+        setEditable(!editable)
+    }
 
     return (
         <View style={styles.container}>
@@ -19,6 +24,26 @@ export default function InputEdit(props) {
                    }}
                    style={styles.textInput}
                 />
+                {
+                    editable ?(
+                      <Icon
+                        name="content-save"
+                        type="material-community"
+                        size={24}
+                        onPress={editar}
+                        style={styles.icon}
+                      />
+                    ):
+                    (
+                        <Icon
+                        name="pencil"
+                        type="material-community"
+                        size={24}
+                        onPress={editar}
+                        style={styles.icon}
+                      />
+                    )
+                }
             </View>
         </View>
     )
