@@ -28,6 +28,10 @@ export const validarSesion = (setUser) => {
 };
 
 
+export const getCurrentUser= ()=>{
+  return firebase.auth().currentUser
+}
+
 
 export const cerrarSesion=()=>{
   firebase
@@ -182,7 +186,7 @@ export const getToken = async () => {
        await 
           db.collection(collection)
           .doc(doc)
-          .set(data)
+          .set(data,{merge:true})
           .catch((ex)=>{
             result.error=ex
           })
@@ -197,7 +201,6 @@ export const getToken = async () => {
 
   
 export const uploadImage=async(image,path,name)=>{
-
   const result={statusResponse:false, error:null, url:null}
   const ref=firebase.storage().ref(path).child(name)
   const blob=await fileToBlob(image)
@@ -213,3 +216,23 @@ export const uploadImage=async(image,path,name)=>{
   }
   return result
 }
+
+export const updateProfile=async(data)=>{
+  const result={statusResponse:true, error:null }
+
+  try{
+     await 
+     firebase
+     .auth().currentUser
+     .updateProfile(data)
+     .catch((ex)=>{
+       result.error=ex
+     })
+  }
+  catch(error){
+    result.statusResponse=false
+    result.error=error
+  }
+  return result
+}
+
