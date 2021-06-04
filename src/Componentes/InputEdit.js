@@ -5,7 +5,7 @@ import {Icon} from "react-native-elements"
 
 export default function InputEdit(props) {
 
-    const {id,label,getValor,placeholder,onChangeInput,editable,setEditable }=props
+    const {id,label,getValor,placeholder,onChangeInput,editable,setEditable,updateData }=props
     
     const editar=()=>{
         setEditable(!editable)
@@ -30,7 +30,10 @@ export default function InputEdit(props) {
                         name="content-save"
                         type="material-community"
                         size={24}
-                        onPress={editar}
+                        onPress={()=>{
+                            updateData(id,getValor(id))
+                            editar()
+                        }}
                         style={styles.icon}
                       />
                     ):

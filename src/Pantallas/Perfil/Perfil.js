@@ -6,6 +6,7 @@ import {uploadImage,updateProfile,addDocument, getUsuario} from '../../Utils/Acc
 import uuid from "random-uuid-v4"
 import Loading from '../../Componentes/Loading'
 import InputEdit from '../../Componentes/InputEdit'
+import Modal from '../../Componentes/Modal'
 
 export default function Perfil(){
     const user = getUsuario()
@@ -54,6 +55,24 @@ export default function Perfil(){
         }
     }
 
+
+    const updateData= async (input,valor)=>{
+          
+        switch(input){
+            case"displayName":
+               updateProfile({displayName:valor})
+               addDocument("usuarios",user.uid,{displayName:valor})
+               console.log("USUARIO",user)
+               break
+            case"phoneNumber":
+                
+               break
+             case"email":
+                
+                break
+       }
+    }
+
     return (
         <View>
             <StatusBar  backgroundColor="#166cb3"/>
@@ -70,6 +89,7 @@ export default function Perfil(){
              setEditEmail={setEditEmail}
              editPhone={editPhone}
              setEditPhone={setEditPhone}
+             updateData={updateData}
             />
         </View>
     )
@@ -142,7 +162,7 @@ function HeaderAvatar(props){
 
 
 function FormDatos(props){
- const {onChangeInput,getValor,editName,editEmail,editPhone,setEditName,setEditEmail,setEditPhone}=props
+ const {onChangeInput,getValor,editName,editEmail,editPhone,setEditName,setEditEmail,setEditPhone,updateData}=props
   return(
       <View>
        <InputEdit
@@ -153,6 +173,7 @@ function FormDatos(props){
          onChangeInput={onChangeInput}
          editable={editName}
          setEditable={setEditName}
+         updateData={updateData}
        />
       <InputEdit
          id="email"
@@ -162,6 +183,7 @@ function FormDatos(props){
          onChangeInput={onChangeInput}
          editable={editEmail}
          setEditable={setEditEmail}
+         updateData={updateData}
        />
        <InputEdit
          id="phoneNumber"
@@ -171,6 +193,7 @@ function FormDatos(props){
          onChangeInput={onChangeInput}
          editable={editPhone}
          setEditable={setEditPhone}
+         updateData={updateData}
        />
       </View>
   )
