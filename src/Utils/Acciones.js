@@ -5,6 +5,7 @@ import * as Notifications from 'expo-notifications';
 import {Platform} from 'react-native';
 import "firebase/firestore"
 import { fileToBlob } from './Helpers'
+import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
 
 const db= firebase.firestore(firebaseApp)
 
@@ -95,13 +96,12 @@ export const  validarPhone=(setPhoneAut)=>{
 export const autenticationWithPhone=async(numero,recaptcha)=>{
   const result={statusResponse:true,verificationId:null, error:null}
   try{
-    
-
-    
+   
     await 
       firebase
       .auth()
       .signInWithPhoneNumber(numero,recaptcha.current)
+      //.currentUser.reauthenticateWithPhoneNumber(numero,recaptcha.current)
       .then((response)=>{
         result.verificationId=response.verificationId
       })
@@ -232,6 +232,71 @@ export const updateProfile=async(data)=>{
   catch(error){
     result.statusResponse=false
     result.error=error
+  }
+  return result
+}
+
+
+export const reautenticar=async(verificationId,code)=>{
+  const result={statusResponse:true, error:null }
+  try{
+ 
+  const credenciales = new firebase.auth.PhoneAuthProvider.credential( verificationId,code)
+
+  await firebase
+    .auth()
+    .currentUser.reauthenticateWithCredential(credenciales)
+    .catch((ex) => {
+      result.statusResponse=false
+      result.error=ex
+    })
+  }
+  catch(ex){
+    result.statusResponse=false
+    result.error=ex
+  }
+  return result
+}
+
+
+export const updateEmailFirebase=async(email)=>{
+  const result={statusResponse:true, error:null }
+  try{
+
+  await firebase
+    .auth()
+    .currentUser.updateEmail(email)
+    .catch((ex) => {
+      result.statusResponse=false
+      result.error=ex
+    })
+  }
+  catch(ex){
+    result.statusResponse=false
+    result.error=ex
+  }
+  return result
+}
+
+
+
+export const updatePhoneNumber=async(verificationId,code)=>{
+  const result={statusResponse:true, error:null }
+  try{
+
+    const credenciales = new firebase.auth.PhoneAuthProvider.credential(verificationId,code)
+
+    await firebase
+      .auth()
+      .currentUser.updatePhoneNumber(credenciales)
+      .catch((ex) => {
+        result.statusResponse=false
+        result.error=ex
+      })
+  }
+  catch(ex){
+    result.statusResponse=false
+    result.error=ex
   }
   return result
 }
