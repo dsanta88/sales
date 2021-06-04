@@ -5,9 +5,51 @@ import {loadImageFromGallery} from '../../Utils/Helpers'
 import {uploadImage,updateProfile,addDocument, getUsuario} from '../../Utils/Acciones'
 import uuid from "random-uuid-v4"
 import Loading from '../../Componentes/Loading'
+import InputEdit from '../../Componentes/InputEdit'
 
 export default function Perfil(){
     const user = getUsuario()
+    const [displayName,setDisplayName]=useState("")
+    const [phoneNumber,setPhoneNumber]=useState("")
+    const [email,setEmail]=useState("")
+
+
+    useEffect(() => {
+         const {displayName,phoneNumber,email}=user
+         setDisplayName(displayName)
+         setPhoneNumber(phoneNumber)
+         setEmail(email)
+    }, [])
+
+    const onChangeInput=(input,valor)=>{
+        
+        switch(input){
+             case"displayName":
+                setDisplayName(valor)
+                break
+             case"phoneNumber":
+                setPhoneNumber(valor)
+                break
+              case"email":
+                 setEmail(valor)
+                 break
+        }
+    }
+   
+    const getValor=(input,valor)=>{
+        
+        switch(input){
+             case"displayName":
+                return displayName
+                break
+             case"phoneNumber":
+                 return phoneNumber
+                break
+              case"email":
+                 return email
+                 break
+        }
+    }
 
     return (
         <View>
@@ -15,6 +57,10 @@ export default function Perfil(){
             <Header/>
             <HeaderAvatar
               user={user}
+            />
+            <FormDatos 
+             onChangeInput={onChangeInput}
+             getValor={getValor}
             />
         </View>
     )
@@ -86,6 +132,34 @@ function HeaderAvatar(props){
 
 
 
+function FormDatos(props){
+ const {onChangeInput,getValor}=props
+  return(
+      <View>
+       <InputEdit
+         id="displayName"
+         label="Nombre"
+         getValor={getValor}
+         placeholder="Nombre"
+         onChangeInput={onChangeInput}
+       />
+      <InputEdit
+         id="email"
+         label="Email"
+         getValor={getValor}
+         placeholder="ejemplo@gmail.com"
+         onChangeInput={onChangeInput}
+       />
+       <InputEdit
+         id="phoneNumber"
+         label="Teléfono"
+         getValor={getValor}
+         placeholder="+000000000"
+         onChangeInput={onChangeInput}
+       />
+      </View>
+  )
+}
 const styles = StyleSheet.create({
     bg:{
         width:"100%",
