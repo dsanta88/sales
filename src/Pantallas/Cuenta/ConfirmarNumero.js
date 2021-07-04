@@ -19,7 +19,7 @@ if(!global.atob){
 
 
 export default function ConfirmarNumero(props) {
-
+    
      const {route}=props
      const {verificationId}=route.params
      const [loading, setLoading] = useState(false)
@@ -44,7 +44,7 @@ export default function ConfirmarNumero(props) {
             setLoading(false)   
           }
           else{
-            Alert.alert("Error","Favor válidar el código ingreado",[{
+            Alert.alert("Error","Favor válidar el código ingresado",[{
                style:"default",
                text:"Entendido",
             }])

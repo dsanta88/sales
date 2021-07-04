@@ -36,6 +36,10 @@ export const getCurrentUser= ()=>{
   return firebase.auth().currentUser
 }
 
+export const getUsuario=()=>{
+  return firebase.auth().currentUser
+}
+
 
 export const cerrarSesion=()=>{
   firebase
@@ -178,9 +182,6 @@ export const getToken = async () => {
   };
 
 
-  export const getUsuario=()=>{
-    return firebase.auth().currentUser
-  }
 
   export const addDocument=async(collection,doc,data)=>{
     const result={statusResponse:true, error:null, data:null }
@@ -306,3 +307,27 @@ export const updatePhoneNumber=async(verificationId,code)=>{
   return result
 }
 
+
+
+export const addRegistro=async(colecion,data)=>{
+  const result={statusResponse:true, error:null }
+  
+  console.log("DATA",data)
+  try{
+    await db
+     .collection(colecion)
+     .add(data)
+     .catch((ex) => {
+      result.statusResponse=false
+      result.error=ex
+     });
+
+  }
+  catch(ex){
+    result.statusResponse=false
+    result.error=ex
+  }
+
+  console.log("RESULTADO",result)
+  return result
+}

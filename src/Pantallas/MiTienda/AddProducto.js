@@ -6,7 +6,7 @@ import {useNavigation} from '@react-navigation/native'
 import Loading from '../../Componentes/Loading'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import {loadImageFromGallery} from '../../Utils/Helpers'
-import {uploadImage} from '../../Utils/Acciones'
+import {uploadImage,addRegistro,getUsuario} from '../../Utils/Acciones'
 import uuid from "random-uuid-v4"
 
 export default function AddProducto() {
@@ -20,6 +20,9 @@ export default function AddProducto() {
      const [errores, setErrores] = useState({})
      const btnRef=useRef()
      const navigation=useNavigation()
+  
+
+     const imagenesUrl = [];
 
      const addProducto=async()=>{
        setErrores({})
@@ -59,18 +62,55 @@ export default function AddProducto() {
       }
       else{
         setLoading(true)
-
-        const imagesUrl= []
         await Promise.all(
            map(imagenes,async(image)=>{
-               const response=await uploadImage(image,"ImagenesProductos",uuid())
+               const response=await uploadImage(image,"ImagenesProductos",uuid())     
                if(response.statusResponse){
-                 imagesUrl.push(response.url)
+                 imagenesUrl.push(response.url);
                }
            })
         )
-        return imagesUrl
 
+        const producto={
+          titulo,
+          descripcion,
+          precio,
+          usuarioId:getUsuario().uid,
+          imagenes:imagenesUrl,
+          status:1,
+          fechaRegistro:new Date(),
+          rating,
+          categoria
+        }
+      
+        const registerProduct= await addRegistro("productos",producto)
+
+        if(registerProduct.statusResponse){
+          setLoading(false)
+          Alert.alert(
+            "Registro exitoso",
+            "El registro se ha registrado de forma correcta",
+            [
+              {
+                style:"cancel",
+                text:"Aceptar",
+                onPress:()=>navigation.navigate("mitienda")
+              }
+            ]
+          )
+        }else{
+          setLoading(false)
+          Alert.alert(
+            "Registro fallido",
+            "Ha ocurrido un error al registrar el producto",
+            [
+              {
+                style:"cancel",
+                text:"Aceptar",
+              }
+            ]
+          )
+        }
       }
      }
 
@@ -290,7 +330,7 @@ const styles = StyleSheet.create({
     },
     txtLabel:{
         fontSize:20,
-        fontFamily:"roboto",
+        fontFamily: "Roboto",
         textAlign:"center",
         fontWeight:"bold",
         color:"#176bb4"
