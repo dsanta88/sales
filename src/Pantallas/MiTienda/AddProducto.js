@@ -94,7 +94,7 @@ export default function AddProducto() {
               {
                 style:"cancel",
                 text:"Aceptar",
-                onPress:()=>navigation.navigate("mitienda")
+                onPress:()=>navigation.navigate("mi-tienda")
               }
             ]
           )

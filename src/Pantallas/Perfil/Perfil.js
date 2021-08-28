@@ -72,7 +72,7 @@ export default function Perfil(){
             case"displayName":
                updateProfile({displayName:valor})
                addDocument("usuarios",user.uid,{displayName:valor})
-               console.log("USUARIO",user)
+            
                break
             case"email":
                 if(valor!=user.email){
@@ -109,14 +109,14 @@ export default function Perfil(){
        }
     }
 
-    const verificarCodigo= async(verificationId,code)=>{
+    const ConfirmarCodigo= async(verificationId,code)=>{
+        console.log("VERIFICATIONID",verificationId)
+        console.log("CODE",code)
       setLoading(true)
       if(updatePhone){
           const resultUpdPhone=await updatePhoneNumber(verificationId,code)
           const resultUpdDocumen=await addDocument("usuarios",user.uid,{phoneNumber:phoneNumber})
           setUpdatephone(false)
-          console.log("resultUpdPhone",resultUpdPhone)
-          console.log("resultUpdDocumen",resultUpdDocumen)
       }
       else
       {
@@ -156,8 +156,8 @@ export default function Perfil(){
             <ModalVerification
               isVisibleModal={isVisible}
               setIsVisibleModal={setIsVisible}
-             verificationId={verificationId}
-             verificarCodigo={verificarCodigo}
+              ConfirmarCodigo={ConfirmarCodigo}
+              verificarCodigo={verificarCodigo}
            />
            <FirebaseRecaptcha referencia={recaptcha}/>
          <Loading isVisible={loading} text="Favor espere" /> 
@@ -269,14 +269,14 @@ function FormDatos(props){
   )
 }
 
- function ModalVerification(props){
-   const {isVisibleModal,setIsVisibleModal,verificationId,verificarCodigo}=props
-  
+function ModalVerification(props){
+   const {isVisibleModal,setIsVisibleModal,ConfirmarCodigo,verificationId}=props
+
    return(
     <Modal isVisible={isVisibleModal} setIsVisible={setIsVisibleModal}>
        <View style={styles.confirmacion}>
             <Text style={styles.titleModal}>Confirmar código</Text>
-           <Text style={styles.detalle}>Se ha enviado un código de confirmación a su número de tel'efono</Text>
+           <Text style={styles.detalle}>Se ha enviado un código de confirmación a su número de teléfono</Text>
           
            <CodeInput
             secureTextEntry
@@ -289,7 +289,7 @@ function FormDatos(props){
             codeInputStyle={{ borderWidth: 1.5 }}
             codeLength={6}
             onFulfill={(code)=>{
-                verificarCodigo(verificationId,code)
+                ConfirmarCodigo(verificationId,code)
             }}
            />
        </View>

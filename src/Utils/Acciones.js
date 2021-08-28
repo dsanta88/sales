@@ -205,6 +205,7 @@ export const getToken = async () => {
 
   
 export const uploadImage=async(image,path,name)=>{
+  
   const result={statusResponse:false, error:null, url:null}
   const ref=firebase.storage().ref(path).child(name)
   const blob=await fileToBlob(image)
@@ -218,6 +219,7 @@ export const uploadImage=async(image,path,name)=>{
   catch(error){
     result.error=error
   }
+  console.log(result)
   return result
 }
 
@@ -312,7 +314,6 @@ export const updatePhoneNumber=async(verificationId,code)=>{
 export const addRegistro=async(colecion,data)=>{
   const result={statusResponse:true, error:null }
   
-  console.log("DATA",data)
   try{
     await db
      .collection(colecion)
@@ -327,7 +328,136 @@ export const addRegistro=async(colecion,data)=>{
     result.statusResponse=false
     result.error=ex
   }
-
-  console.log("RESULTADO",result)
   return result
+}
+
+
+export const getListMyProductos=async ()=>{
+  const result={statusResponse:true, error:null, data:[] }
+  let productos=[]
+  try{
+    await db
+     .collection("productos")
+     .where("usuarioId","==",getUsuario().uid)
+     .where("status","==",1)
+     .get()
+     .then((response)=>{
+       response.forEach((doc)=>{
+          const producto=doc.data()
+          producto.id=doc.id
+          productos.push(producto)
+       })
+
+       result.data=productos
+     })
+     .catch((ex) => {
+      result.statusResponse=false
+      result.error=ex
+     });
+
+  }
+  catch(ex){
+    result.statusResponse=false
+    result.error=ex
+  }
+  return result
+}
+
+
+export const updateRegistro=async(colleccion,documento,data)=>{
+  console.log(colleccion)
+  console.log(documento)
+  console.log(data)
+
+  const result={statusResponse:true, error:null }
+  try{
+    await db
+     .collection(colleccion)
+     .doc(documento)
+     .update(data)
+     .catch((ex) => {
+      result.statusResponse=false
+      result.error=ex
+     });
+
+  }
+  catch(ex){
+    result.statusResponse=false
+    result.error=ex
+  }
+  console.log(result)
+return result
+}
+
+export const deleteRegistro=async(colleccion,documento)=>{
+  const result={statusResponse:true, error:null }
+
+  try{
+    await db
+     .collection(colleccion)
+     .doc(documento)
+     .delete()
+     .catch((ex) => {
+      result.statusResponse=false
+      result.error=ex
+     });
+
+  }
+  catch(ex){
+    result.statusResponse=false
+    result.error=ex
+  }
+  
+return result
+}
+
+export const getRegistroXid=async (collecion,documento)=>{
+  const result={statusResponse:true, error:null, data:[] }
+
+  try{
+    await db
+     .collection(collecion)
+     .doc(documento)
+     .get()
+     .then((response) => {
+      const producto = response.data();
+      producto.id = response.id;
+
+      result.data = producto;
+    })
+     .catch((ex) => {
+      result.statusResponse=false
+      result.error=ex
+     });
+
+  }
+  catch(ex){
+    result.statusResponse=false
+    result.error=ex
+  }
+  return result
+}
+
+
+export const listProducts=async()=>{
+
+  const productList = [];
+
+  await db
+  .collection("productos")
+  .where("status","==",1)
+  .get()
+  .then(response =>{
+
+      response.forEach((doc)=>{
+      const product=doc.data();
+      product.id=doc.id;
+      productList.push(product);
+      
+    })
+  })
+  .catch((err)=>console.log(err))
+  console.log("LISTA DE PRODUCTOS:",productList);
+  return productList;
+
 }
