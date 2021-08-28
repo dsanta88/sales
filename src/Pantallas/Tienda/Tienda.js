@@ -94,12 +94,33 @@ export default function Tienda() {
 
 
 function Producto(props){
-  const {producto}=props
-  console.log(producto)
+  const {producto,navigation}=props
+  
+  const {
+    titulo,
+    descripcion,
+    precio,
+    imagenes,
+    rating,
+    id, 
+    usuarioId
+  }=producto.item;
+
   return (
-    <View>
-    <Text>Producto</Text>
-    </View>
+  <TouchableOpacity style={styles.card}
+   onPress={()=>{
+     navigation.navigate("detalle",{id,titulo})
+    }}
+  >
+  <Image
+   source={{uri:imagenes[0]}}
+   style={styles.imgProducto}
+  />
+  <View style={styles.infobox}>
+   <Text style={styles.titulo}>{titulo}</Text>
+   <Text>{descripcion.substring(0,50)}</Text>
+  </View>
+  </TouchableOpacity>
   )
 }
 
@@ -122,5 +143,34 @@ const styles = StyleSheet.create({
    logo:{
      width:50,
      height:50
+   },
+   card:{
+     width:"100%",
+     paddingVertical:20,
+     flex:1,
+     paddingHorizontal:10,
+     marginHorizontal:5,
+     borderBottomColor:"#128c7e",
+     borderBottomWidth:1,
+     alignItems:"center",
+     justifyContent:"center",
+     flexDirection:"row"
+   },
+   imgProducto:{
+     width:120,
+     height:200,
+     borderRadius: 10
+   },
+   infobox:{
+     paddingLeft:10,
+     alignItems:"center",
+     flex:1
+   },
+   titulo:{
+     marginTop:10,
+     fontSize:18,
+     fontWeight:"700",
+     textAlign:"center",
+     color:"#075e54"
    }
 })
