@@ -33,6 +33,7 @@ export default function Tienda() {
       })()
     }, [])
     
+    
     return (
         <View style={styles.frame}>
             <StatusBar backgroundColor="#128c7e"/>
