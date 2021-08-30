@@ -13,7 +13,7 @@ import { Icon, Avatar, Image, Rating, Badge } from "react-native-elements";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { size } from "lodash";
-import { listProducts, getUsuario ,listProductsXcategoria, Buscar} from "../../Utils/Acciones";
+import { listProducts, getUsuario ,listProductsXcategoria,ListarNotificaciones} from "../../Utils/Acciones";
 import Busqueda from "../../Componentes/Busqueda";
 
 export default function Tienda() {
@@ -27,13 +27,26 @@ export default function Tienda() {
 
   useEffect(() => {
     (async () => {
+      setNotificaciones(0)
       setProductList(await listProducts());
+
+      const consulta=await ListarNotificaciones();
+      if(consulta.statusResponse){
+        setNotificaciones(size(consulta.data))
+      }
     })();
   }, []);
 
   useFocusEffect(
     useCallback(() => {
       (async () => {
+        setNotificaciones(0)
+        const consulta=await ListarNotificaciones();
+        
+        if(consulta.statusResponse){
+          setNotificaciones(size(consulta.data))
+        }
+
         setProductList(await listProducts());    
       })();
     }, [])
@@ -78,12 +91,20 @@ export default function Tienda() {
                 name="bell-outline"
                 color="#fff"
                 size={30}
+                onPress={()=>{
+                  navigation.navigate("mensajes")
+                }}
               />
-              <Badge
-                status="error"
-                containerStyle={{ position: "absolute", top: -4, right: -4 }}
-                value={2}
-              />
+              {
+                notificaciones>0 &&(
+                  <Badge
+                  status="error"
+                  containerStyle={{ position: "absolute", top: -4, right: -4 }}
+                  value={notificaciones}
+                />
+                )
+              }
+            
             </View>
           </View>
           <Busqueda 

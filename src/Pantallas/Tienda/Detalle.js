@@ -7,6 +7,7 @@ import { size } from "lodash";
 import Loading from "../../Componentes/Loading";
 import Carousel from "../../Componentes/Carousel";
 import Modal from "../../Componentes/Modal"
+import {sendWhatsapp} from"../../Utils/Helpers"
 
 export default function Detalle(props) {
   const { route } = props;
@@ -16,7 +17,7 @@ export default function Detalle(props) {
   const [expopushtoken, setExpopushtoken] = useState("");
   const [nombreVendedor, setNombreVendedor] = useState("Nombre");
   const [photoVendedor, setPhotoVendedor] = useState("");
-  const [phoneVendedor, setPhoneVendedor] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [activeSlide, setActiveSlide] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -39,7 +40,7 @@ export default function Detalle(props) {
           setExpopushtoken(result.token)
           setNombreVendedor(result.displayName)
           setPhotoVendedor(result.photoURL)
-          setPhoneVendedor(result.phoneNumber)
+          setPhoneNumber(result.phoneNumber)
       }
     })();
   }, [producto]);
@@ -105,7 +106,8 @@ export default function Detalle(props) {
                   color="#25d366"
                   size={40}
                   onPress={() => {
-                    const mensajewhatsapp = `Estimado ${nombreVendedor}, mi nombre es ${usuarioActual.displayName}  me interesa el producto ${producto.titulo} que está en WhatsCommerce`;     
+                    const mensajewhatsapp = `Estimado ${nombreVendedor}, mi nombre es ${usuarioActual.displayName}  me interesa el producto ${producto.titulo} que está en la aplicación Sales.`;     
+                    sendWhatsapp(phoneNumber, mensajewhatsapp);
                   }}
                 />
               </View>

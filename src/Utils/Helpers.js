@@ -1,8 +1,7 @@
 
 import * as Permissions from 'expo-permissions'
 import * as ImagePicker from 'expo-image-picker'
-import {Alert} from 'react-native'
-import { Linking } from 'react-native';
+import { Linking,Alert } from 'react-native';
 import { size } from 'lodash';
 
 
@@ -79,19 +78,18 @@ export const loadImageFromGallery= async(array)=>{
     Linking.openURL(`tel:${phoneNumber}`)
   }
   
-  export const sendWhatsApp=(phoneNumber,text)=>{
-    const link=`https://wa.me/${phoneNumber}?text=${text}`
-    Linking.canOpenURL(link).then((supported)=>{
-       if(!supported){
-          Alert.alert("Por favor instale WhatsApp para enviar un mensaje directo.")
-          return
-       } 
-       return Linking.openURL(link)   
-    })
-  }
-  
-  export const sendEmail=(to,subject,body)=>{
-    Linking.openURL(`mailto:${to}?subject=${subject}&body=${body}`)
-  }
+  export const sendWhatsapp = (numero, text) => {
+    let link = `whatsapp://send?phone=${numero.substring(
+      1,
+      size(numero)
+    )}&text=${text}`;
+    Linking.canOpenURL(link).then((supported) => {
+      if (!supported) {
+        Alert.alert("Favor instale whatsapp para enviar un mensaje directo");
+      } else {
+        return Linking.openURL(link);
+      }
+    });
+  };
   
 

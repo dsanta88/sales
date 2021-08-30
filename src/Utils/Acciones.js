@@ -565,13 +565,13 @@ export const setMensajeNotificacion = (token, titulo, body, data) => {
 };
 
 export const ListarNotificaciones = async () => {
-  let respuesta = { statusresponse: false, data: [] };
+  let respuesta = { statusResponse: false, data: [] };
 
   let index = 0;
 
   await db
-    .collection("Notificaciones")
-    .where("receiver", "==", ObtenerUsuario().uid)
+    .collection("notificaciones")
+    .where("receiver", "==", getUsuario().uid)
     .where("visto", "==", 0)
     .get()
     .then((response) => {
@@ -582,11 +582,11 @@ export const ListarNotificaciones = async () => {
         datos.id = doc.id;
         respuesta.data.push(datos);
       });
-      respuesta.statusresponse = true;
+      respuesta.statusResponse = true;
     });
 
   for (const notificacion of respuesta.data) {
-    const usuario = await obternerRegistroxID("Usuarios", notificacion.sender);
+    const usuario = await getRegistroXid("usuarios", notificacion.sender);
     respuesta.data[index].sender = usuario.data;
     index++;
   }
