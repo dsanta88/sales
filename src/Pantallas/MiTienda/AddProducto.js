@@ -75,7 +75,7 @@ export default function AddProducto() {
           titulo,
           descripcion,
           precio,
-          usuarioId:getUsuario().uid,
+          usuario:getUsuario().uid,
           imagenes:imagenesUrl,
           status:1,
           fechaRegistro:new Date(),
@@ -83,6 +83,8 @@ export default function AddProducto() {
           categoria
         }
       
+
+     
         const registerProduct= await addRegistro("productos",producto)
 
         if(registerProduct.statusResponse){

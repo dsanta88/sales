@@ -20,14 +20,17 @@ export default function MiTienda() {
     },[])
 
 
-   // useFocusEffect(
-     //   useCallback(() => {
-     //      (async () => {
-         //    setProductos(await getListMyProductos());
-          // })();
-       //  }, [])
-     //  );
-
+    useFocusEffect(
+      useCallback(() => {
+        (async () => {
+          const result=await getListMyProductos()
+          if(result.statusResponse){
+            setProductos(result.data)
+          }
+        })();
+      }, [])
+    );
+  
     
     
     return (

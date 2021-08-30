@@ -7,10 +7,11 @@ import "firebase/firestore"
 import { fileToBlob } from './Helpers'
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha'
 import { cos } from 'react-native-reanimated'
-
+import { FireSQL } from 'firesql'
 
 
 const db= firebase.firestore(firebaseApp)
+const fireSQL=new FireSQL(firebase.firestore(),{includeId:"id"});
 
 Notifications.setNotificationHandler({
   handleNotification: async()=>({
@@ -219,7 +220,6 @@ export const uploadImage=async(image,path,name)=>{
   catch(error){
     result.error=error
   }
-  console.log(result)
   return result
 }
 
@@ -338,7 +338,7 @@ export const getListMyProductos=async ()=>{
   try{
     await db
      .collection("productos")
-     .where("usuarioId","==",getUsuario().uid)
+     .where("usuario","==",getUsuario().uid)
      .where("status","==",1)
      .get()
      .then((response)=>{
@@ -365,9 +365,6 @@ export const getListMyProductos=async ()=>{
 
 
 export const updateRegistro=async(colleccion,documento,data)=>{
-  console.log(colleccion)
-  console.log(documento)
-  console.log(data)
 
   const result={statusResponse:true, error:null }
   try{
@@ -385,7 +382,6 @@ export const updateRegistro=async(colleccion,documento,data)=>{
     result.statusResponse=false
     result.error=ex
   }
-  console.log(result)
 return result
 }
 
@@ -435,6 +431,7 @@ export const getRegistroXid=async (collecion,documento)=>{
     result.statusResponse=false
     result.error=ex
   }
+
   return result
 }
 
@@ -442,10 +439,12 @@ export const getRegistroXid=async (collecion,documento)=>{
 export const listProducts=async()=>{
 
   const productList = [];
-
+  let index = 0;
+  
   await db
   .collection("productos")
-  .where("status","==",1)
+  .where("usuario", "==", getUsuario().uid)
+  .where("status", "==", 1)
   .get()
   .then(response =>{
 
@@ -457,7 +456,147 @@ export const listProducts=async()=>{
     })
   })
   .catch((err)=>console.log(err))
-  console.log("LISTA DE PRODUCTOS:",productList);
+
+  for (const registro of productList) {
+    const usuario = await getRegistroXid("usuarios", registro.usuario);
+    productList[index].usuario = usuario.data;
+    index++;
+  }
+
+
   return productList;
 
 }
+
+
+export const listProductsXcategoria=async(categoria)=>{
+
+  const productList = [];
+  let index = 0;
+  
+  await db
+  .collection("productos")
+  .where("usuario", "==", getUsuario().uid)
+  .where("categoria", "==", categoria)
+  .get()
+  .then(response =>{
+
+      response.forEach((doc)=>{
+      const product=doc.data();
+      product.id=doc.id;
+      productList.push(product);
+      
+    })
+  })
+  .catch((err)=>console.log(err))
+
+  for (const registro of productList) {
+    const usuario = await getRegistroXid("usuarios", registro.usuario);
+    productList[index].usuario = usuario.data;
+    index++;
+  }
+
+  return productList;
+
+}
+
+
+
+
+export const Buscar = async (search) => {
+  let productos = [];
+
+  await fireSQL
+    .query(`SELECT * FROM productos WHERE titulo LIKE '${search}%' `)
+    .then((response) => {
+      productos = response;
+    });
+
+  return productos;
+};
+
+// export const iniciarnotificaciones = (
+//   notificationListener,
+//   responseListener
+// ) => {
+//   notificationListener.current = Notifications.addNotificationReceivedListener(
+//     (notification) => {
+//       console.log(notification);
+//     }
+//   );
+
+//   responseListener.current = Notifications.addNotificationResponseReceivedListener(
+//     (response) => {
+//       console.log(response);
+//     }
+//   );
+
+//   return () => {
+//     Notifications.removeNotificationSubscription(notificationListener);
+//     Notifications.removeNotificationSubscription(responseListener);
+//   };
+// };
+
+// export const sendPushNotification = async (mensaje) => {
+//   let respuesta = false;
+//   await fetch("https://exp.host/--/api/v2/push/send", {
+//     method: "POST",
+//     headers: {
+//       Accept: "application/json",
+//       "Accept-encoding": "gzip, deflate",
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(mensaje),
+//   }).then((response) => {
+//     respuesta = true;
+//   });
+
+//   return respuesta;
+// };
+
+// export const setMensajeNotificacion = (token, titulo, body, data) => {
+//   const message = {
+//     to: token,
+//     sound: "default",
+//     title: titulo,
+//     body: body,
+//     data: data,
+//   };
+
+//   return message;
+// };
+
+// export const ListarNotificaciones = async () => {
+//   let respuesta = { statusresponse: false, data: [] };
+
+//   let index = 0;
+
+//   await db
+//     .collection("Notificaciones")
+//     .where("receiver", "==", ObtenerUsuario().uid)
+//     .where("visto", "==", 0)
+//     .get()
+//     .then((response) => {
+//       let datos;
+
+//       response.forEach((doc) => {
+//         datos = doc.data();
+//         datos.id = doc.id;
+//         respuesta.data.push(datos);
+//       });
+//       respuesta.statusresponse = true;
+//     });
+
+//   for (const notificacion of respuesta.data) {
+//     const usuario = await obternerRegistroxID("Usuarios", notificacion.sender);
+//     respuesta.data[index].sender = usuario.data;
+//     index++;
+//   }
+
+//   return respuesta;
+// };
+
+
+
+
+
