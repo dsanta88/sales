@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Dimensions, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Dimensions, ScrollView,Alert } from "react-native";
 import { Avatar, Icon, Input, Button, Rating } from "react-native-elements";
 import { interpolate } from "react-native-reanimated";
-import { getRegistroXid, getUsuario } from "../../Utils/Acciones";
+import { getRegistroXid, getUsuario, setMensajeNotificacion, sendPushNotification, addRegistro } from "../../Utils/Acciones";
 import { size } from "lodash";
 import Loading from "../../Componentes/Loading";
 import Carousel from "../../Componentes/Carousel";
+import Modal from "../../Componentes/Modal"
 
 export default function Detalle(props) {
   const { route } = props;
@@ -20,7 +21,7 @@ export default function Detalle(props) {
   const [activeSlide, setActiveSlide] = useState(0);
   const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const usuaroActual = getUsuario();
+  const usuarioActual = getUsuario();
 
   useEffect(() => {
     (async () => {
@@ -95,7 +96,7 @@ export default function Detalle(props) {
                   color="#25d366"
                   size={40}
                   onPress={() => {
-                    setisvisible(true);
+                    setIsVisible(true);
                   }}
                 />
                 <Icon
@@ -104,18 +105,161 @@ export default function Detalle(props) {
                   color="#25d366"
                   size={40}
                   onPress={() => {
-                    const mensajewhatsapp = `Estimado ${nombreVendedor}, mi nombre es ${usuarioActual.displayName}  me interesa el producto ${producto.titulo} que está en WhatsCommerce`;
-                   
+                    const mensajewhatsapp = `Estimado ${nombreVendedor}, mi nombre es ${usuarioActual.displayName}  me interesa el producto ${producto.titulo} que está en WhatsCommerce`;     
                   }}
                 />
               </View>
             </View>
             </View>
+            <EnviarMensaje
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
+            nombreVendedor={nombreVendedor}
+            avatarVendedor={photoVendedor}
+            mensaje={mensaje}
+            setMensaje={setMensaje}
+            receiver={producto.usuario}
+            sender={usuarioActual.uid}
+            token={expopushtoken}
+            producto={producto}
+            setLoading={setLoading}
+            nombreCliente={usuarioActual.displayName}
+          />
         </View>
-        <Text>Detalle</Text>
       </ScrollView>
     );
   }
+}
+
+
+
+function EnviarMensaje(props) {
+
+  const {
+    isVisible,
+    setIsVisible,
+    nombreVendedor,
+    avatarVendedor,
+    mensaje,
+    setMensaje,
+    receiver,
+    sender,
+    token,
+    producto,
+    setLoading,
+    nombreCliente,
+  } = props;
+
+  const enviarNotificacion = async () => {
+    if (!mensaje) {
+      console.log("ENTRO 1");
+      Alert.alert("Validación", "Favor introduce ubn texto para el mensaje", [
+        {
+          style: "default",
+          text: "Entendido",
+        },
+      ]);
+    } else {
+      console.log("ENTRO 2");
+      setLoading(true);
+      console.log("SENDER:",sender);
+      const notificacion = {
+        sender: sender,
+        receiver: receiver,
+        mensaje,
+        fechacreacion: new Date(),
+        productoid: producto.id,
+        productotitulo: producto.titulo,
+        visto: 0,
+      };
+
+      const resultado = await addRegistro("notificaciones", notificacion);
+      if (resultado.statusResponse) {
+
+         const mensajeNotificacion = setMensajeNotificacion(
+          token,
+          `Cliente Interesado - ${producto.titulo}`,
+          `${nombreCliente}, te ha enviado un mensaje`,
+          { data: mensaje }
+        );
+
+        console.log("mensajeNotificacion",mensajeNotificacion);
+        const respuesta = await sendPushNotification(mensajeNotificacion);
+        setLoading(false);
+
+        if (respuesta) {
+          Alert.alert(
+            "Acción realizada correctamente",
+            "Se ha enviado el mensaje correctamente",
+            [
+              {
+                style: "cancel",
+                text: "Entendido",
+                onPress: () => setIsVisible(false),
+              },
+            ]
+          );
+          setMensaje("");
+        } else {
+          Alert.alert(
+            "Error",
+            "Se ha producido un error al enviar mensaje, favor intentelo nuevamente  ",
+            [
+              {
+                style: "cancel",
+                text: "Entendido",
+              },
+            ]
+          );
+          setLoading(false);
+        }
+      }
+    }
+  };
+
+
+
+  return (
+    <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          fontSize: 16,
+          borderRadius: 20,
+        }}
+      >
+        <Avatar
+          source={
+            avatarVendedor
+              ? { uri: avatarVendedor }
+              : require("../../../assets/avatar.jpg")
+          }
+          style={styles.photovendor}
+        />
+
+        <Text style={{ color: "#075e54", fontSize: 16, fontWeight: "bold" }}>
+          Envíale un mensaje a {nombreVendedor}
+        </Text>
+
+        <Input
+          placeholder="Escribe un mensaje"
+          multiline={true}
+          inputStyle={styles.textArea}
+          onChangeText={(text) => {
+            setMensaje(text);
+          }}
+          value={mensaje}
+        />
+        <Button
+          title="Enviar mensaje"
+          buttonStyle={styles.btnsend}
+          containerStyle={{ width: "90%" }}
+          onPress={enviarNotificacion}
+        />
+      </View>
+    </Modal>
+  );
 }
 
 const styles = StyleSheet.create({

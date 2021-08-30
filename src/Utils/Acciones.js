@@ -8,6 +8,7 @@ import { fileToBlob } from './Helpers'
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha'
 import { cos } from 'react-native-reanimated'
 import { FireSQL } from 'firesql'
+import { truncate } from 'lodash'
 
 
 const db= firebase.firestore(firebaseApp)
@@ -515,88 +516,80 @@ export const Buscar = async (search) => {
   return productos;
 };
 
-// export const iniciarnotificaciones = (
-//   notificationListener,
-//   responseListener
-// ) => {
-//   notificationListener.current = Notifications.addNotificationReceivedListener(
-//     (notification) => {
-//       console.log(notification);
-//     }
-//   );
+export const iniciarNotificaciones = (notificationListener,responseListener) => {
+  notificationListener.current = Notifications.addNotificationReceivedListener(
+    (notification) => {
+      console.log(notification);
+    }
+  );
 
-//   responseListener.current = Notifications.addNotificationResponseReceivedListener(
-//     (response) => {
-//       console.log(response);
-//     }
-//   );
+  responseListener.current = Notifications.addNotificationResponseReceivedListener(
+    (response) => {
+      console.log(response);
+    }
+  );
 
-//   return () => {
-//     Notifications.removeNotificationSubscription(notificationListener);
-//     Notifications.removeNotificationSubscription(responseListener);
-//   };
-// };
+  return () => {
+    Notifications.removeNotificationSubscription(notificationListener);
+    Notifications.removeNotificationSubscription(responseListener);
+  };
+};
 
-// export const sendPushNotification = async (mensaje) => {
-//   let respuesta = false;
-//   await fetch("https://exp.host/--/api/v2/push/send", {
-//     method: "POST",
-//     headers: {
-//       Accept: "application/json",
-//       "Accept-encoding": "gzip, deflate",
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(mensaje),
-//   }).then((response) => {
-//     respuesta = true;
-//   });
+export const sendPushNotification = async (mensaje) => {
+  let respuesta = false;
+  await fetch("https://exp.host/--/api/v2/push/send", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Accept-encoding": "gzip, deflate",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(mensaje),
+  }).then((response) => {
+    respuesta = true;
+  });
 
-//   return respuesta;
-// };
+  return respuesta;
+};
 
-// export const setMensajeNotificacion = (token, titulo, body, data) => {
-//   const message = {
-//     to: token,
-//     sound: "default",
-//     title: titulo,
-//     body: body,
-//     data: data,
-//   };
+export const setMensajeNotificacion = (token, titulo, body, data) => {
+  const message = {
+    to: token,
+    sound: "default",
+    title: titulo,
+    body: body,
+    data: data,
+  };
 
-//   return message;
-// };
+  return message;
+};
 
-// export const ListarNotificaciones = async () => {
-//   let respuesta = { statusresponse: false, data: [] };
+export const ListarNotificaciones = async () => {
+  let respuesta = { statusresponse: false, data: [] };
 
-//   let index = 0;
+  let index = 0;
 
-//   await db
-//     .collection("Notificaciones")
-//     .where("receiver", "==", ObtenerUsuario().uid)
-//     .where("visto", "==", 0)
-//     .get()
-//     .then((response) => {
-//       let datos;
+  await db
+    .collection("Notificaciones")
+    .where("receiver", "==", ObtenerUsuario().uid)
+    .where("visto", "==", 0)
+    .get()
+    .then((response) => {
+      let datos;
 
-//       response.forEach((doc) => {
-//         datos = doc.data();
-//         datos.id = doc.id;
-//         respuesta.data.push(datos);
-//       });
-//       respuesta.statusresponse = true;
-//     });
+      response.forEach((doc) => {
+        datos = doc.data();
+        datos.id = doc.id;
+        respuesta.data.push(datos);
+      });
+      respuesta.statusresponse = true;
+    });
 
-//   for (const notificacion of respuesta.data) {
-//     const usuario = await obternerRegistroxID("Usuarios", notificacion.sender);
-//     respuesta.data[index].sender = usuario.data;
-//     index++;
-//   }
+  for (const notificacion of respuesta.data) {
+    const usuario = await obternerRegistroxID("Usuarios", notificacion.sender);
+    respuesta.data[index].sender = usuario.data;
+    index++;
+  }
 
-//   return respuesta;
-// };
-
-
-
-
-
+  return respuesta;
+};

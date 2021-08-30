@@ -30,7 +30,8 @@
         "WRITE_EXTERNAL_STORAGE",
         "NOTIFICATION",
         "USER_FACING_NOTIFICATIONS"
-      ]
+      ],
+      "useNextNotificationsApi":true
     },
     "web": {
       "favicon": "./assets/favicon.png"
