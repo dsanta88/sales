@@ -71,7 +71,7 @@ export default function Tienda() {
       <View style={styles.header}>
         <KeyboardAwareScrollView>
           <View style={styles.menu}>
-            <Avatar
+          <Avatar
               rounded
               size="medium"
               source={
@@ -79,6 +79,7 @@ export default function Tienda() {
                   ? { uri: photoURL }
                   : require("../../../assets/avatar.jpg")
               }
+              onPress={() => navigation.toggleDrawer()}
             />
             <Image
               source={require("../../../assets/logo.jpg")}

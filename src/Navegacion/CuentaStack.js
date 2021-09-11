@@ -13,6 +13,7 @@ export default function CuentaStack(){
         <Stack.Navigator>
 
        
+       
           <Stack.Screen
               component={EnviarConfirmacion}
               name="enviar-confirmacion"

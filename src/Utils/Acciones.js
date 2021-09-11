@@ -444,7 +444,7 @@ export const listProducts=async()=>{
   
   await db
   .collection("productos")
-  .where("usuario", "==", getUsuario().uid)
+  
   .where("status", "==", 1)
   .get()
   .then(response =>{
